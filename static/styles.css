@@ -1,0 +1,30 @@
+body {
+    background-color: rgb(50, 60, 70);
+    font-family: sans-serif;
+}
+
+.chessboard-grid {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    min-height: 90vh;
+    grid-template-columns: repeat(8, 65px);
+    grid-template-rows: repeat(8, 65px);
+}
+
+.chessboard-square {
+    font-size: 15px;
+    border: 1px solid white;
+}
+
+.chessboard-square:hover {
+    background-color: rgb(230, 230, 230);
+}
+
+.black-square {
+    background-color: rgb(175, 100, 0);
+}
+
+.white-square {
+    background-color: rgb(255, 225, 175);
+}
