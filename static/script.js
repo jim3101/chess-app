@@ -106,14 +106,31 @@ class Chessboard {
 }
 
 
+let whiteCharacters = {'king': String.fromCharCode(9812), 'queen': String.fromCharCode(9813), 'rook': String.fromCharCode(9814),
+                   'bishop': String.fromCharCode(9815), 'knight': String.fromCharCode(9816), 'pawn': String.fromCharCode(9817)};
+let blackCharacters = {'king': String.fromCharCode(9818), 'queen': String.fromCharCode(9819), 'rook': String.fromCharCode(9820),
+                   'bishop': String.fromCharCode(9821), 'knight': String.fromCharCode(9822), 'pawn': String.fromCharCode(9823)};
+let chessChars = {'white': whiteCharacters, 'black': blackCharacters};
+
+
+let initialPositions = {'a1': chessChars.white.rook, 'b1': chessChars.white.knight, 'c1': chessChars.white.bishop,
+                        'd1': chessChars.white.queen, 'e1': chessChars.white.king, 'f1': chessChars.white.bishop,
+                        'g1': chessChars.white.knight, 'h1': chessChars.white.rook, 'a2': chessChars.white.pawn,
+                        'b2': chessChars.white.pawn, 'c2': chessChars.white.pawn, 'd2': chessChars.white.pawn,
+                        'e2': chessChars.white.pawn, 'f2': chessChars.white.pawn, 'g2': chessChars.white.pawn,
+                        'h2': chessChars.white.pawn,
+                        'a8': chessChars.black.rook, 'b8': chessChars.black.knight, 'c8': chessChars.black.bishop,
+                        'd8': chessChars.black.queen, 'e8': chessChars.black.king, 'f8': chessChars.black.bishop,
+                        'g8': chessChars.black.knight, 'h8': chessChars.black.rook, 'a7': chessChars.black.pawn,
+                        'b7': chessChars.black.pawn, 'c7': chessChars.black.pawn, 'd7': chessChars.black.pawn,
+                        'e7': chessChars.black.pawn, 'f7': chessChars.black.pawn, 'g7': chessChars.black.pawn,
+                        'h7': chessChars.black.pawn};
+
+
 let squares = document.getElementsByClassName('chessboard-square');
 let notationToggleButton = document.getElementById('notation-toggle-button');
 let initialPositionButton = document.getElementById('initial-position-button');
 
-let initialPositions = {'a1': String.fromCharCode(9814), 'b1': String.fromCharCode(9816), 'c1': String.fromCharCode(9815), 'd1': String.fromCharCode(9813),
-                        'e1': String.fromCharCode(9812), 'f1': String.fromCharCode(9815), 'g1': String.fromCharCode(9816), 'h1': String.fromCharCode(9814),
-                        'a2': String.fromCharCode(9817), 'b2': String.fromCharCode(9817), 'c2': String.fromCharCode(9817), 'd2': String.fromCharCode(9817),
-                        'e2': String.fromCharCode(9817), 'f2': String.fromCharCode(9817), 'g2': String.fromCharCode(9817), 'h2': String.fromCharCode(9817),};
 
 let chessboard = new Chessboard(squares, initialPositions);
 

@@ -44,7 +44,7 @@ body {
 
 .chessboard-square-piece {
     cursor: move;
-    font-size: 55px;
+    font-size: 58px;
     text-align: center;
     height: 100%;
 }
