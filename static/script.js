@@ -121,8 +121,6 @@ let initialPositions = {'a1': {'type': 'rook', 'character': chessChars.white.roo
                         'g7': {'type': 'pawn', 'character': chessChars.black.pawn},
                         'h7': {'type': 'pawn', 'character': chessChars.black.pawn}};
 
-console.log(initialPositions);
-
 
 let squares = document.getElementsByClassName('chessboard-square');
 let initialPositionButton = document.getElementById('initial-position-button');
