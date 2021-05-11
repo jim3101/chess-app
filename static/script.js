@@ -1,39 +1,10 @@
 class Chessboard {
+
     constructor(squareElements, initialPositions) {
         this.squareElements = squareElements;
-        this.notation = 'off';
         this.positions = {};
         this.set_positions(initialPositions);
-        this.render();
-    }
-
-    toggle_notation() {
-        if (this.notation === 'off') {
-            this.turn_on_notation();
-            this.notation = 'on';
-        } else if (this.notation === 'on') {
-            this.turn_off_notation();
-            this.notation = 'off';
-        }
-    }
-
-    turn_off_notation() {
-        Array.from(this.squareElements).forEach(square => {
-            Array.from(square.children).forEach(childElement => {
-                if (childElement.className === 'chessboard-square-text') {
-                    square.removeChild(childElement);
-                }
-            })
-        })
-    }
-
-    turn_on_notation() {
-        Array.from(this.squareElements).forEach(square => {
-            let p = document.createElement('DIV');
-            p.classList.add('chessboard-square-text')
-            p.innerHTML = square.id;
-            square.appendChild(p);
-        })
+        this.turn = 'white';
     }
 
     set_positions(positionObject) {
@@ -59,7 +30,8 @@ class Chessboard {
                 p.classList.add('chessboard-square-piece')
                 p.setAttribute('draggable', 'true');
                 p.id = square.id;
-                p.textContent = this.positions[square.id];
+                p.textContent = this.positions[square.id]['character'];
+                console.log(p.textContent);
                 square.appendChild(p);
             }
         })
@@ -96,8 +68,11 @@ class Chessboard {
                 let movingPiece = document.querySelector('.chessboard-square-piece.dragging');
                 if (movingPiece != null) {
                     movingPiece.classList.remove('dragging');
+                    
+                    const currentPiece = this.positions[movingPiece.id];
                     delete this.positions[movingPiece.id];
-                    this.positions[square.id] = movingPiece.textContent;
+
+                    this.positions[square.id] = currentPiece;
                     this.render();
                 }
             })
@@ -113,31 +88,49 @@ let blackCharacters = {'king': String.fromCharCode(9818), 'queen': String.fromCh
 let chessChars = {'white': whiteCharacters, 'black': blackCharacters};
 
 
-let initialPositions = {'a1': chessChars.white.rook, 'b1': chessChars.white.knight, 'c1': chessChars.white.bishop,
-                        'd1': chessChars.white.queen, 'e1': chessChars.white.king, 'f1': chessChars.white.bishop,
-                        'g1': chessChars.white.knight, 'h1': chessChars.white.rook, 'a2': chessChars.white.pawn,
-                        'b2': chessChars.white.pawn, 'c2': chessChars.white.pawn, 'd2': chessChars.white.pawn,
-                        'e2': chessChars.white.pawn, 'f2': chessChars.white.pawn, 'g2': chessChars.white.pawn,
-                        'h2': chessChars.white.pawn,
-                        'a8': chessChars.black.rook, 'b8': chessChars.black.knight, 'c8': chessChars.black.bishop,
-                        'd8': chessChars.black.queen, 'e8': chessChars.black.king, 'f8': chessChars.black.bishop,
-                        'g8': chessChars.black.knight, 'h8': chessChars.black.rook, 'a7': chessChars.black.pawn,
-                        'b7': chessChars.black.pawn, 'c7': chessChars.black.pawn, 'd7': chessChars.black.pawn,
-                        'e7': chessChars.black.pawn, 'f7': chessChars.black.pawn, 'g7': chessChars.black.pawn,
-                        'h7': chessChars.black.pawn};
+let initialPositions = {'a1': {'type': 'rook', 'character': chessChars.white.rook}, 
+                        'b1': {'type': 'knight', 'character': chessChars.white.knight}, 
+                        'c1': {'type': 'bishop', 'character': chessChars.white.bishop},
+                        'd1': {'type': 'queen', 'character': chessChars.white.queen}, 
+                        'e1': {'type': 'king', 'character': chessChars.white.king}, 
+                        'f1': {'type': 'bishop', 'character': chessChars.white.bishop},
+                        'g1': {'type': 'knight', 'character': chessChars.white.knight}, 
+                        'h1': {'type': 'rook', 'character': chessChars.white.rook}, 
+                        'a2': {'type': 'pawn', 'character': chessChars.white.pawn},
+                        'b2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
+                        'c2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
+                        'd2': {'type': 'pawn', 'character': chessChars.white.pawn},
+                        'e2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
+                        'f2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
+                        'g2': {'type': 'pawn', 'character': chessChars.white.pawn},
+                        'h2': {'type': 'pawn', 'character': chessChars.white.pawn},
+                        'a8': {'type': 'rook', 'character': chessChars.black.rook}, 
+                        'b8': {'type': 'knight', 'character': chessChars.black.knight}, 
+                        'c8': {'type': 'bishop', 'character': chessChars.black.bishop},
+                        'd8': {'type': 'queen', 'character': chessChars.black.queen}, 
+                        'e8': {'type': 'king', 'character': chessChars.black.king}, 
+                        'f8': {'type': 'bishop', 'character': chessChars.black.bishop},
+                        'g8': {'type': 'knight', 'character': chessChars.black.knight}, 
+                        'h8': {'type': 'rook', 'character': chessChars.black.rook}, 
+                        'a7': {'type': 'pawn', 'character': chessChars.black.pawn},
+                        'b7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
+                        'c7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
+                        'd7': {'type': 'pawn', 'character': chessChars.black.pawn},
+                        'e7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
+                        'f7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
+                        'g7': {'type': 'pawn', 'character': chessChars.black.pawn},
+                        'h7': {'type': 'pawn', 'character': chessChars.black.pawn}};
+
+console.log(initialPositions);
 
 
 let squares = document.getElementsByClassName('chessboard-square');
-let notationToggleButton = document.getElementById('notation-toggle-button');
 let initialPositionButton = document.getElementById('initial-position-button');
 
 
 let chessboard = new Chessboard(squares, initialPositions);
 
-notationToggleButton.addEventListener('click', () => {
-    chessboard.toggle_notation();
-})
 
 initialPositionButton.addEventListener('click', () => {
     chessboard.set_positions(initialPositions);
-})
+});
