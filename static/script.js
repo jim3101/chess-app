@@ -12,6 +12,18 @@ class Chessboard {
         this.render();
     }
 
+    set_turn(player) {
+        this.turn = player;
+    }
+
+    next_turn() {
+        if (this.turn === 'white') {
+            this.turn = 'black';
+        } else if (this.turn === 'black') {
+            this.turn = 'white';
+        }
+    }
+
     clear_render() {
         Array.from(this.squareElements).forEach(square => {
             Array.from(square.children).forEach(childElement => {
@@ -30,8 +42,9 @@ class Chessboard {
                 p.classList.add('chessboard-square-piece')
                 p.setAttribute('draggable', 'true');
                 p.id = square.id;
-                p.textContent = this.positions[square.id]['character'];
-                console.log(p.textContent);
+                
+                const currentPiece = this.positions[square.id];
+                p.textContent = chessChars[currentPiece.color][currentPiece.type];
                 square.appendChild(p);
             }
         })
@@ -70,13 +83,163 @@ class Chessboard {
                     movingPiece.classList.remove('dragging');
                     
                     const currentPiece = this.positions[movingPiece.id];
-                    delete this.positions[movingPiece.id];
-
-                    this.positions[square.id] = currentPiece;
-                    this.render();
+                    if (isLegalMove(this.turn, this.positions, currentPiece, square.id, movingPiece.id)) {
+                        delete this.positions[movingPiece.id];
+                        this.positions[square.id] = currentPiece;
+                        this.render();
+                        this.next_turn();
+                    } else {
+                        console.log('illegal move!');
+                    }
                 }
             })
         })
+    }
+}
+
+
+function getOtherPlayer(player) {
+    if (player === 'white') {
+        return 'black';
+    } else if (player === 'black') {
+        return 'white';
+    }
+}
+
+
+function squareIsFree(positions, squareCode) {
+    return !positions.hasOwnProperty(squareCode);
+}
+
+
+function opponentOccupiesSquare(player, positions, squareCode) {
+    if (squareIsFree(positions, squareCode)) {
+        return false;
+    } else {
+        return !(positions[squareCode]['color'] === player);
+    }
+}
+
+
+function iOccupySquare(player, positions, squareCode) {
+    if (squareIsFree(positions, squareCode)) {
+        return false;
+    } else {
+        return (positions[squareCode]['color'] === player);
+    }
+}
+
+
+function getFileNumber(player, squareCode) {
+    if (player === 'white') {
+        return squareCode.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
+    } else if (player === 'black') {
+        return 9 - (squareCode.charCodeAt(0) - 'a'.charCodeAt(0) + 1);
+    }
+}
+
+
+function getRankNumber(player, squareCode) {
+    if (player === 'white') {
+        return Number(squareCode[1]);
+    } else if (player === 'black') {
+        return 9 - Number(squareCode[1]);
+    }
+}
+
+
+function isLegalPawnMove(player, positions, targetSquare, currentSquare) {
+    const rank = getRankNumber(player, currentSquare);
+    const file = getFileNumber(player, currentSquare);
+    const targetRank = getRankNumber(player, targetSquare);
+    const targetFile = getFileNumber(player, targetSquare);
+
+    if (targetFile === file) {
+        if (targetRank === (rank + 1) && squareIsFree(positions, targetSquare)) {
+            return true;
+        } else if (targetRank === (rank + 2) && rank === 2 && squareIsFree(positions, targetSquare)) {
+            return true;
+        }
+    } else if (targetFile === (file + 1) || (targetFile === (file - 1))) {
+        if (targetRank === (rank + 1) && opponentOccupiesSquare(player, positions, targetSquare)) {
+            return true;
+        } else {
+            return false;
+        }
+    } 
+    else {
+        return false;
+    }
+}
+
+
+function isLegalKingMove(player, positions, targetSquare, currentSquare) {
+    const rank = getRankNumber(player, currentSquare);
+    const file = getFileNumber(player, currentSquare);
+    const targetRank = getRankNumber(player, targetSquare);
+    const targetFile = getFileNumber(player, targetSquare);
+
+    if (iOccupySquare(player, positions, targetSquare)) {
+        return false;
+    }
+
+    if (targetFile === file || targetFile === (file + 1) || targetFile === (file - 1)) {
+        if (targetRank === rank || targetRank === (rank + 1) || targetRank === (rank - 1)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+function isCheck(player, positions) {
+    const playersKingPosition = Object.keys(positions).find(field => positions[field]['color'] === player && positions[field]['type'] === 'king')
+
+    for (const occupiedField in positions) {
+        const currentPiece = positions[occupiedField];
+        if (currentPiece.color != player) {
+            if (isLegalCheck(getOtherPlayer(player), positions, currentPiece, playersKingPosition, occupiedField)) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+
+function willBeCheck(player, positions, movingPiece, targetSquare, currentSquare) {
+    const positionsCopy = {...positions};
+    delete positionsCopy[currentSquare];
+    positionsCopy[targetSquare] = movingPiece;
+    return isCheck(player, positionsCopy);
+}
+
+
+function isLegalMove(player, positions, movingPiece, targetSquare, currentSquare) {
+    if (movingPiece['color'] != player) {
+        return false;
+    }
+    if (willBeCheck(player, positions, movingPiece, targetSquare, currentSquare)) {
+        return false;
+    }
+    if (movingPiece['type'] === 'pawn') {   
+        return isLegalPawnMove(player, positions, targetSquare, currentSquare);
+    } else if (movingPiece['type'] === 'king') {
+        return isLegalKingMove(player, positions, targetSquare, currentSquare);
+    }
+}
+
+
+function isLegalCheck(player, positions, movingPiece, targetSquare, currentSquare) {
+    if (movingPiece['color'] != player) {
+        return false;
+    }
+    if (movingPiece['type'] === 'pawn') {
+        return isLegalPawnMove(player, positions, targetSquare, currentSquare);
+    } else if (movingPiece['type'] === 'king') {
+        return isLegalKingMove(player, positions, targetSquare, currentSquare);
     }
 }
 
@@ -88,38 +251,38 @@ let blackCharacters = {'king': String.fromCharCode(9818), 'queen': String.fromCh
 let chessChars = {'white': whiteCharacters, 'black': blackCharacters};
 
 
-let initialPositions = {'a1': {'type': 'rook', 'character': chessChars.white.rook}, 
-                        'b1': {'type': 'knight', 'character': chessChars.white.knight}, 
-                        'c1': {'type': 'bishop', 'character': chessChars.white.bishop},
-                        'd1': {'type': 'queen', 'character': chessChars.white.queen}, 
-                        'e1': {'type': 'king', 'character': chessChars.white.king}, 
-                        'f1': {'type': 'bishop', 'character': chessChars.white.bishop},
-                        'g1': {'type': 'knight', 'character': chessChars.white.knight}, 
-                        'h1': {'type': 'rook', 'character': chessChars.white.rook}, 
-                        'a2': {'type': 'pawn', 'character': chessChars.white.pawn},
-                        'b2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
-                        'c2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
-                        'd2': {'type': 'pawn', 'character': chessChars.white.pawn},
-                        'e2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
-                        'f2': {'type': 'pawn', 'character': chessChars.white.pawn}, 
-                        'g2': {'type': 'pawn', 'character': chessChars.white.pawn},
-                        'h2': {'type': 'pawn', 'character': chessChars.white.pawn},
-                        'a8': {'type': 'rook', 'character': chessChars.black.rook}, 
-                        'b8': {'type': 'knight', 'character': chessChars.black.knight}, 
-                        'c8': {'type': 'bishop', 'character': chessChars.black.bishop},
-                        'd8': {'type': 'queen', 'character': chessChars.black.queen}, 
-                        'e8': {'type': 'king', 'character': chessChars.black.king}, 
-                        'f8': {'type': 'bishop', 'character': chessChars.black.bishop},
-                        'g8': {'type': 'knight', 'character': chessChars.black.knight}, 
-                        'h8': {'type': 'rook', 'character': chessChars.black.rook}, 
-                        'a7': {'type': 'pawn', 'character': chessChars.black.pawn},
-                        'b7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
-                        'c7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
-                        'd7': {'type': 'pawn', 'character': chessChars.black.pawn},
-                        'e7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
-                        'f7': {'type': 'pawn', 'character': chessChars.black.pawn}, 
-                        'g7': {'type': 'pawn', 'character': chessChars.black.pawn},
-                        'h7': {'type': 'pawn', 'character': chessChars.black.pawn}};
+let initialPositions = {'a1': {'color': 'white', 'type': 'rook'}, 
+                        'b1': {'color': 'white', 'type': 'knight'}, 
+                        'c1': {'color': 'white', 'type': 'bishop'},
+                        'd1': {'color': 'white', 'type': 'queen'}, 
+                        'e1': {'color': 'white', 'type': 'king'}, 
+                        'f1': {'color': 'white', 'type': 'bishop'},
+                        'g1': {'color': 'white', 'type': 'knight'}, 
+                        'h1': {'color': 'white', 'type': 'rook'}, 
+                        'a2': {'color': 'white', 'type': 'pawn'},
+                        'b2': {'color': 'white', 'type': 'pawn'}, 
+                        'c2': {'color': 'white', 'type': 'pawn'}, 
+                        'd2': {'color': 'white', 'type': 'pawn'},
+                        'e2': {'color': 'white', 'type': 'pawn'}, 
+                        'f2': {'color': 'white', 'type': 'pawn'}, 
+                        'g2': {'color': 'white', 'type': 'pawn'},
+                        'h2': {'color': 'white', 'type': 'pawn'},
+                        'a8': {'color': 'black', 'type': 'rook'}, 
+                        'b8': {'color': 'black', 'type': 'knight'}, 
+                        'c8': {'color': 'black', 'type': 'bishop'},
+                        'd8': {'color': 'black', 'type': 'queen'}, 
+                        'e8': {'color': 'black', 'type': 'king'}, 
+                        'f8': {'color': 'black', 'type': 'bishop'},
+                        'g8': {'color': 'black', 'type': 'knight'}, 
+                        'h8': {'color': 'black', 'type': 'rook'}, 
+                        'a7': {'color': 'black', 'type': 'pawn'},
+                        'b7': {'color': 'black', 'type': 'pawn'}, 
+                        'c7': {'color': 'black', 'type': 'pawn'}, 
+                        'd7': {'color': 'black', 'type': 'pawn'},
+                        'e7': {'color': 'black', 'type': 'pawn'}, 
+                        'f7': {'color': 'black', 'type': 'pawn'}, 
+                        'g7': {'color': 'black', 'type': 'pawn'},
+                        'h7': {'color': 'black', 'type': 'pawn'}};
 
 
 let squares = document.getElementsByClassName('chessboard-square');
@@ -131,4 +294,5 @@ let chessboard = new Chessboard(squares, initialPositions);
 
 initialPositionButton.addEventListener('click', () => {
     chessboard.set_positions(initialPositions);
+    chessboard.set_turn('white');
 });
