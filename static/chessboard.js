@@ -1,5 +1,6 @@
+import Move from '/static/move.js';
+import isLegalMove from '/static/legalMoves.js';
 import { chessChars } from '/static/constants.js';
-import { isLegalMove } from '/static/moves.js';
 
 
 export default class Chessboard {
@@ -82,18 +83,21 @@ export default class Chessboard {
 
             square.addEventListener('drop', (e) => {
                 square.classList.remove('dragging-over');
-                let movingPiece = document.querySelector('.chessboard-square-piece.dragging');
-                if (movingPiece != null) {
-                    movingPiece.classList.remove('dragging');
+                let movingPieceElement = document.querySelector('.chessboard-square-piece.dragging');
+                
+                if (movingPieceElement != null) {
+                    movingPieceElement.classList.remove('dragging');
                     
-                    const currentPiece = this.positions[movingPiece.id];
-                    if (isLegalMove(this.turn, this.positions, currentPiece, square.id, movingPiece.id)) {
-                        delete this.positions[movingPiece.id];
-                        this.positions[square.id] = currentPiece;
+                    const currentSquare = movingPieceElement.id;
+                    const targetSquare = square.id;
+                    const movingPiece = this.positions[currentSquare];
+                    const move = new Move(this.turn, movingPiece, currentSquare, targetSquare);
+
+                    if (isLegalMove(this.positions, move)) {
+                        delete this.positions[movingPieceElement.id];
+                        this.positions[targetSquare] = movingPiece;
                         this.render();
                         this.next_turn();
-                    } else {
-                        console.log('illegal move!');
                     }
                 }
             })

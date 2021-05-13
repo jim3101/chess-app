@@ -1,3 +1,6 @@
+import Move from '/static/move.js';
+
+
 function getOtherPlayer(player) {
     if (player === 'white') {
         return 'black';
@@ -48,20 +51,20 @@ function getRankNumber(player, squareCode) {
 }
 
 
-function isLegalPawnMove(player, positions, targetSquare, currentSquare) {
-    const rank = getRankNumber(player, currentSquare);
-    const file = getFileNumber(player, currentSquare);
-    const targetRank = getRankNumber(player, targetSquare);
-    const targetFile = getFileNumber(player, targetSquare);
+function isLegalPawnMove(positions, move) {
+    const rank = getRankNumber(move.player, move.currentSquare);
+    const file = getFileNumber(move.player, move.currentSquare);
+    const targetRank = getRankNumber(move.player, move.targetSquare);
+    const targetFile = getFileNumber(move.player, move.targetSquare);
 
     if (targetFile === file) {
-        if (targetRank === (rank + 1) && squareIsFree(positions, targetSquare)) {
+        if (targetRank === (rank + 1) && squareIsFree(positions, move.targetSquare)) {
             return true;
-        } else if (targetRank === (rank + 2) && rank === 2 && squareIsFree(positions, targetSquare)) {
+        } else if (targetRank === (rank + 2) && rank === 2 && squareIsFree(positions, move.targetSquare)) {
             return true;
         }
     } else if (targetFile === (file + 1) || (targetFile === (file - 1))) {
-        if (targetRank === (rank + 1) && opponentOccupiesSquare(player, positions, targetSquare)) {
+        if (targetRank === (rank + 1) && opponentOccupiesSquare(move.player, positions, move.targetSquare)) {
             return true;
         } else {
             return false;
@@ -73,13 +76,13 @@ function isLegalPawnMove(player, positions, targetSquare, currentSquare) {
 }
 
 
-function isLegalKingMove(player, positions, targetSquare, currentSquare) {
-    const rank = getRankNumber(player, currentSquare);
-    const file = getFileNumber(player, currentSquare);
-    const targetRank = getRankNumber(player, targetSquare);
-    const targetFile = getFileNumber(player, targetSquare);
+function isLegalKingMove(positions, move) {
+    const rank = getRankNumber(move.player, move.currentSquare);
+    const file = getFileNumber(move.player, move.currentSquare);
+    const targetRank = getRankNumber(move.player, move.targetSquare);
+    const targetFile = getFileNumber(move.player, move.targetSquare);
 
-    if (iOccupySquare(player, positions, targetSquare)) {
+    if (iOccupySquare(move.player, positions, move.targetSquare)) {
         return false;
     }
 
@@ -93,13 +96,14 @@ function isLegalKingMove(player, positions, targetSquare, currentSquare) {
 }
 
 
-function isCheck(player, positions) {
+function isCheck(positions, player) {
     const playersKingPosition = Object.keys(positions).find(field => positions[field]['color'] === player && positions[field]['type'] === 'king')
 
     for (const occupiedField in positions) {
         const currentPiece = positions[occupiedField];
         if (currentPiece.color != player) {
-            if (isLegalCheck(getOtherPlayer(player), positions, currentPiece, playersKingPosition, occupiedField)) {
+            const move = new Move(getOtherPlayer(player), currentPiece, occupiedField, playersKingPosition);
+            if (canCaptureKing(positions, move)) {
                 return true;
             }
         }
@@ -109,36 +113,36 @@ function isCheck(player, positions) {
 }
 
 
-function willBeCheck(player, positions, movingPiece, targetSquare, currentSquare) {
+function willBeCheck(positions, move) {
     const positionsCopy = {...positions};
-    delete positionsCopy[currentSquare];
-    positionsCopy[targetSquare] = movingPiece;
-    return isCheck(player, positionsCopy);
+    delete positionsCopy[move.currentSquare];
+    positionsCopy[move.targetSquare] = move.movingPiece;
+    return isCheck(positionsCopy, move.player);
 }
 
 
-function isLegalCheck(player, positions, movingPiece, targetSquare, currentSquare) {
-    if (movingPiece['color'] != player) {
+function canCaptureKing(positions, move) {
+    if (move.movingPiece['color'] != move.player) {
         return false;
     }
-    if (movingPiece['type'] === 'pawn') {
-        return isLegalPawnMove(player, positions, targetSquare, currentSquare);
-    } else if (movingPiece['type'] === 'king') {
-        return isLegalKingMove(player, positions, targetSquare, currentSquare);
+    if (move.movingPiece['type'] === 'pawn') {
+        return isLegalPawnMove(positions, move);
+    } else if (move.movingPiece['type'] === 'king') {
+        return isLegalKingMove(positions, move);
     }
 }
 
 
-export function isLegalMove(player, positions, movingPiece, targetSquare, currentSquare) {
-    if (movingPiece['color'] != player) {
+export default function isLegalMove(positions, move) {
+    if (move.movingPiece['color'] != move.player) {
         return false;
     }
-    if (willBeCheck(player, positions, movingPiece, targetSquare, currentSquare)) {
+    if (willBeCheck(positions, move)) {
         return false;
     }
-    if (movingPiece['type'] === 'pawn') {   
-        return isLegalPawnMove(player, positions, targetSquare, currentSquare);
-    } else if (movingPiece['type'] === 'king') {
-        return isLegalKingMove(player, positions, targetSquare, currentSquare);
+    if (move.movingPiece['type'] === 'pawn') {   
+        return isLegalPawnMove(positions, move);
+    } else if (move.movingPiece['type'] === 'king') {
+        return isLegalKingMove(positions, move);
     }
 }

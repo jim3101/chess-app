@@ -5,7 +5,6 @@ import { initialPositions } from '/static/constants.js';
 let squares = document.getElementsByClassName('chessboard-square');
 let initialPositionButton = document.getElementById('initial-position-button');
 
-
 let chessboard = new Chessboard(squares, initialPositions);
 
 
