@@ -12,6 +12,9 @@ export default class Move {
     }
 
     isLegal(positions) {
+        if (iOccupySquare(this.player, positions, this.targetSquare)) {
+            return false;
+        }
         if (this.movingPiece['color'] != this.player) {
             return false;
         }
@@ -25,6 +28,14 @@ export default class Move {
             }
         } else if (this.movingPiece['type'] === 'bishop') {
             if (!this.isLegalBishopMove(positions)) {
+                return false;
+            }
+        } else if (this.movingPiece['type'] === 'rook') {
+            if (!this.isLegalRookMove(positions)) {
+                return false;
+            }
+        } else if (this.movingPiece['type'] === 'queen') {
+            if (!this.isLegalQueenMove(positions)) {
                 return false;
             }
         } else if (this.movingPiece['type'] === 'king') {
@@ -94,12 +105,39 @@ export default class Move {
         }
         return false;
     }
-    
-    isLegalKingMove(positions) {
-        if (iOccupySquare(this.player, positions, this.targetSquare)) {
-            return false;
+
+    isLegalRookMove(positions) {
+        if (this.targetFile === this.file || this.targetRank === this.rank) {
+            if (this.targetFile === this.file) {
+                const rankTravelDistance = this.targetRank - this.rank;
+                for (let i = 1; i < Math.abs(rankTravelDistance); i++) {
+                    const inBetweenRank = this.rank + (i * rankTravelDistance / Math.abs(rankTravelDistance));
+                    const inBetweenSquareCode = getSquareCode(this.player, this.file, inBetweenRank);
+                    if (!squareIsFree(positions, inBetweenSquareCode)) {
+                        return false;
+                    }
+                }
+            }
+            if (this.targetRank === this.rank) {
+                const fileTravelDistance = this.targetFile - this.file;
+                for (let i = 1; i < Math.abs(fileTravelDistance); i++) {
+                    const inBetweenFile = this.file + (i * fileTravelDistance / Math.abs(fileTravelDistance));
+                    const inBetweenSquareCode = getSquareCode(this.player, inBetweenFile, this.rank);
+                    if (!squareIsFree(positions, inBetweenSquareCode)) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
-    
+        return false;
+    }
+
+    isLegalQueenMove(positions) {
+        return this.isLegalBishopMove(positions) || this.isLegalRookMove(positions);
+    }
+
+    isLegalKingMove(positions) {
         if (this.targetFile === this.file || this.targetFile === (this.file + 1) || 
             this.targetFile === (this.file - 1)) {
             if (this.targetRank === this.rank || this.targetRank === (this.rank + 1) || 
@@ -129,6 +167,10 @@ export default class Move {
             return this.isLegalKnightMove(positions);
         } else if (this.movingPiece['type'] === 'bishop') {
             return this.isLegalBishopMove(positions);
+        } else if (this.movingPiece['type'] === 'rook') {
+            return this.isLegalRookMove(positions);
+        } else if (this.movingPiece['type'] === 'queen') {
+            return this.isLegalQueenMove(positions);
         } else if (this.movingPiece['type'] === 'king') {
             return this.isLegalKingMove(positions);
         }
