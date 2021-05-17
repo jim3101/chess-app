@@ -7,20 +7,23 @@ export default class Chessboard {
     constructor(squareElements, initialPositions) {
         this.squareElements = squareElements;
         this.positions = {};
-        this.set_positions(initialPositions);
+        this.setPositions(initialPositions);
         this.turn = 'white';
+
+        this.legalEnPassant = null;
+        this.enPassantTakes = null;
     }
 
-    set_positions(positionObject) {
+    setPositions(positionObject) {
         this.positions = {...positionObject};
         this.render();
     }
 
-    set_turn(player) {
+    setTurn(player) {
         this.turn = player;
     }
 
-    next_turn() {
+    nextTurn() {
         if (this.turn === 'white') {
             this.turn = 'black';
         } else if (this.turn === 'black') {
@@ -28,7 +31,7 @@ export default class Chessboard {
         }
     }
 
-    clear_render() {
+    clearRender() {
         Array.from(this.squareElements).forEach(square => {
             Array.from(square.children).forEach(childElement => {
                 if (childElement.className === 'chessboard-square-piece') {
@@ -39,7 +42,7 @@ export default class Chessboard {
     }
 
     render() {
-        this.clear_render();
+        this.clearRender();
         Array.from(this.squareElements).forEach(square => {
             if (this.positions.hasOwnProperty(square.id)) {
                 let p = document.createElement('DIV');
@@ -52,10 +55,10 @@ export default class Chessboard {
                 square.appendChild(p);
             }
         })
-        this.set_piece_callbacks();
+        this.setPieceEventListeners();
     }
 
-    set_piece_callbacks() {
+    setPieceEventListeners() {
         let pieces = document.querySelectorAll('.chessboard-square-piece');
         Array.from(pieces).forEach(piece => {
             piece.addEventListener('dragstart', () => {
@@ -92,11 +95,17 @@ export default class Chessboard {
                     const movingPiece = this.positions[currentSquare];
                     const move = new Move(this.turn, movingPiece, currentSquare, targetSquare);
 
-                    if (move.isLegal(this.positions)) {
+                    if (move.isLegal(this.positions, this.legalEnPassant)) {
+                        if (targetSquare === this.legalEnPassant) {
+                            delete this.positions[this.enPassantTakes];
+                        }
+                        this.legalEnPassant = move.enablesEnPassant(this.positions);
+                        this.enPassantTakes = move.getEnPassantTakes();
+
                         delete this.positions[movingPieceElement.id];
                         this.positions[targetSquare] = movingPiece;
                         this.render();
-                        this.next_turn();
+                        this.nextTurn();
                     }
                 }
             })

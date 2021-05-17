@@ -9,9 +9,12 @@ export default class Move {
         this.file = getFileNumber(this.player, this.currentSquare);
         this.targetRank = getRankNumber(this.player, this.targetSquare);
         this.targetFile = getFileNumber(this.player, this.targetSquare);
+
+        this.enPassant = null;
+        this.enPassantTakes = null;
     }
 
-    isLegal(positions) {
+    isLegal(positions, legalEnPassant) {
         if (iOccupySquare(this.player, positions, this.targetSquare)) {
             return false;
         }
@@ -19,7 +22,7 @@ export default class Move {
             return false;
         }
         if (this.movingPiece['type'] === 'pawn') {   
-            if (!this.isLegalPawnMove(positions)) {
+            if (!this.isLegalPawnMove(positions, legalEnPassant)) {
                 return false;
             }
         } else if (this.movingPiece['type'] === 'knight') {
@@ -51,17 +54,20 @@ export default class Move {
         return true;
     }
 
-    isLegalPawnMove(positions) {
+    isLegalPawnMove(positions, legalEnPassant) {
         if (this.targetFile === this.file) {
             if (this.targetRank === (this.rank + 1) && squareIsFree(positions, this.targetSquare)) {
                 return true;
             } else if (this.targetRank === (this.rank + 2) && this.rank === 2 && 
                        squareIsFree(positions, this.targetSquare) && 
                        squareIsFree(positions, getSquareCode(this.player, this.targetFile, this.rank+1))) {
+                this.enPassant = getSquareCode(this.player, this.file, this.rank+1);
+                this.enPassantTakes = getSquareCode(this.player, this.file, this.targetRank);
                 return true;
             }
         } else if (this.targetFile === (this.file + 1) || (this.targetFile === (this.file - 1))) {
-            if (this.targetRank === (this.rank + 1) && opponentOccupiesSquare(this.player, positions, this.targetSquare)) {
+            if (this.targetRank === (this.rank + 1) && (opponentOccupiesSquare(this.player, positions, this.targetSquare) ||
+                                                        this.targetSquare === legalEnPassant)) {
                 return true;
             } else {
                 return false;
@@ -162,7 +168,7 @@ export default class Move {
         }
 
         if (this.movingPiece['type'] === 'pawn') {
-            return this.isLegalPawnMove(positions);
+            return this.isLegalPawnMove(positions, null);
         } else if (this.movingPiece['type'] === 'knight') {
             return this.isLegalKnightMove(positions);
         } else if (this.movingPiece['type'] === 'bishop') {
@@ -174,6 +180,20 @@ export default class Move {
         } else if (this.movingPiece['type'] === 'king') {
             return this.isLegalKingMove(positions);
         }
+    }
+
+    enablesEnPassant(positions) {
+        if (this.movingPiece['type'] === 'pawn') {   
+            if (this.isLegalPawnMove(positions, null)) {
+                return this.enPassant;
+            }
+        }
+
+        return null;
+    }
+
+    getEnPassantTakes() {
+        return this.enPassantTakes;
     }
 }
 

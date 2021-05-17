@@ -9,6 +9,6 @@ let chessboard = new Chessboard(squares, initialPositions);
 
 
 initialPositionButton.addEventListener('click', () => {
-    chessboard.set_positions(initialPositions);
-    chessboard.set_turn('white');
+    chessboard.setPositions(initialPositions);
+    chessboard.setTurn('white');
 });
