@@ -68,6 +68,14 @@ export default class Chessboard {
             piece.addEventListener('dragend', () => {
                 piece.classList.remove('dragging');
             })
+
+            piece.addEventListener('dragover', () => {
+                piece.parentElement.classList.add('dragging-over');
+            })
+
+            piece.addEventListener('dragleave', () => {
+                piece.parentElement.classList.remove('dragging-over');
+            })
         })
 
         Array.from(this.squareElements).forEach(square => {
