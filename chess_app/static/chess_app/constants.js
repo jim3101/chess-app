@@ -1,4 +1,4 @@
-import Piece from '/static/piece.js';
+import Piece from './piece.js';
 
 
 const whiteCharacters = {'king': String.fromCharCode(9812), 'queen': String.fromCharCode(9813), 'rook': String.fromCharCode(9814),

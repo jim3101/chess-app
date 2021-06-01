@@ -4,8 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Chess</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <script type="module" src="{{ url_for('static', filename='main.js') }}"></script>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'chess_app/styles.css' %}">
+    <script type="module" src="{% static 'chess_app/main.js' %}"></script>
 </head>
 
 <body>

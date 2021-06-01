@@ -1,5 +1,5 @@
-import getLegalMoves from '/static/legalMoves.js';
-import { chessChars } from '/static/constants.js';
+import getLegalMoves from './legalMoves.js';
+import { chessChars } from './constants.js';
 
 
 export default class Chessboard {

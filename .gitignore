@@ -1,2 +1,6 @@
+db.sqlite3
+
 .idea/
 __pycache__/
+application/__pycache__/
+chess_app/migrations/

@@ -1,5 +1,5 @@
-import Chessboard from '/static/chessboard.js';
-import { initialPositions } from '/static/constants.js';
+import Chessboard from '/static/chess_app/chessboard.js';
+import { initialPositions } from './constants.js';
 
 
 const squares = document.getElementsByClassName('chessboard-square');

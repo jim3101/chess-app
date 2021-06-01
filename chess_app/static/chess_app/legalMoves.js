@@ -1,4 +1,4 @@
-import Piece from '/static/piece.js'
+import Piece from './piece.js'
 
 
 class Move {
