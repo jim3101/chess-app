@@ -33,27 +33,3 @@ export default class LoginScreen {
         }
     }
 }
-
-
-// const loginButton = document.getElementById('login-button');
-// loginButton.addEventListener('click', () => {
-//     const loginScreen = document.getElementById('login');
-//     const loginConfirmButton = document.getElementById('login-confirm-button');
-
-//     function loginCallback() {
-//         const usernameInputField = document.getElementById('username-input');
-//         const userTextField = document.getElementById('user-text');
-//         userTextField.innerText = 'Username: ' + usernameInputField.value;
-//         socket.emit('login', usernameInputField.value);
-//         loginConfirmButton.removeEventListener('click', loginCallback);
-//         loginScreen.style.display = 'none';
-//     }
-    
-//     if (loginScreen.style.display === 'none' || loginScreen.style.display === '') {
-//         loginConfirmButton.addEventListener('click', loginCallback)
-//         loginScreen.style.display = 'grid';
-//     } else {
-//         loginConfirmButton.removeEventListener('click', loginCallback);
-//         loginScreen.style.display = 'none';
-//     }
-// })
