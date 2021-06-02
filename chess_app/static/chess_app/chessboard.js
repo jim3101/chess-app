@@ -4,9 +4,10 @@ import { chessChars } from './constants.js';
 
 export default class Chessboard {
 
-    constructor(squareElements, initialPositions, turnTextField) {
+    constructor(squareElements, initialPositions, turnTextField, serverSocket) {
         this.squareElements = squareElements;
         this.turnTextField = turnTextField;
+        this.serverSocket = serverSocket;
 
         this.positions = {};
         this.turn = 'white';
@@ -60,36 +61,40 @@ export default class Chessboard {
         })
         this.turnTextField.innerText = this.turn + "'s turn";
         this.setPieceEventListeners();
+        this.setSquareEventListeners();
+    }
+
+    showLegalMoves(piece) {
+        const currentPiece = this.positions[piece.id];
+        this.selectedPieceLegalMoves = getLegalMoves(this.turn, currentPiece, piece.id, this.positions, null, true);
+        this.selectedPieceLegalMoves.forEach(legalMove => {
+            const square = document.getElementById(legalMove.newSquare);
+            square.classList.add('legal-move');
+        })
+    }
+
+    removeLegalMoves() {
+        if (this.selectedPieceLegalMoves !== null) {
+            this.selectedPieceLegalMoves.forEach(legalMove => {
+                const square = document.getElementById(legalMove.newSquare);
+                square.classList.remove('legal-move');
+            })
+        }
     }
 
     setPieceEventListeners() {
         let pieces = document.querySelectorAll('.chessboard-square-piece');
         Array.from(pieces).forEach(piece => {
             piece.addEventListener('mousedown', () => {
-                const currentPiece = this.positions[piece.id];
-                this.selectedPieceLegalMoves = getLegalMoves(this.turn, currentPiece, piece.id, this.positions, null, true);
-                this.selectedPieceLegalMoves.forEach(legalMove => {
-                    const square = document.getElementById(legalMove.newSquare);
-                    square.classList.add('legal-move');
-                })
+                this.showLegalMoves(piece);
             })
 
             piece.addEventListener('mouseup', () => {
-                if (this.selectedPieceLegalMoves !== null) {
-                    this.selectedPieceLegalMoves.forEach(legalMove => {
-                        const square = document.getElementById(legalMove.newSquare);
-                        square.classList.remove('legal-move');
-                    })
-                }
+                this.removeLegalMoves();
             })
 
             piece.addEventListener('mouseleave', () => {
-                if (this.selectedPieceLegalMoves !== null) {
-                    this.selectedPieceLegalMoves.forEach(legalMove => {
-                        const square = document.getElementById(legalMove.newSquare);
-                        square.classList.remove('legal-move');
-                    })
-                }
+                this.removeLegalMoves();
             })
 
             piece.addEventListener('dragstart', () => {
@@ -108,7 +113,24 @@ export default class Chessboard {
                 piece.parentElement.classList.remove('dragging-over');
             })
         })
+    }
 
+    makeMove(square, movingPieceElement) {
+        const currentSquare = movingPieceElement.id;
+        const targetSquare = square.id;
+        const movingPiece = this.positions[currentSquare];
+
+        const move = this.selectedPieceLegalMoves.find(move => move.newSquare === targetSquare);
+        if (move !== undefined) {
+            delete this.positions[movingPieceElement.id];
+            this.positions[targetSquare] = movingPiece;
+            this.nextTurn();
+            this.render();
+            // this.serverSocket.emit('move', move);
+        }
+    }
+
+    setSquareEventListeners() {
         Array.from(this.squareElements).forEach(square => {
             square.addEventListener('dragenter', () => {
                 square.classList.add('dragging-over');
@@ -123,33 +145,19 @@ export default class Chessboard {
             })
 
             square.addEventListener('drop', (e) => {
-                if (this.selectedPieceLegalMoves !== null) {
-                    this.selectedPieceLegalMoves.forEach(legalMove => {
-                        const square = document.getElementById(legalMove.newSquare);
-                        square.classList.remove('legal-move');
-                    })
-                }
+                this.removeLegalMoves();
                 
                 square.classList.remove('dragging-over');
                 const movingPieceElement = document.querySelector('.chessboard-square-piece.dragging');
                 
                 if (movingPieceElement != null) {
                     movingPieceElement.classList.remove('dragging');
-                    
-                    const currentSquare = movingPieceElement.id;
-                    const targetSquare = square.id;
-                    const movingPiece = this.positions[currentSquare];
 
-                    if (this.selectedPieceLegalMoves.find(move => move.newSquare === targetSquare)) {
-                        delete this.positions[movingPieceElement.id];
-                        this.positions[targetSquare] = movingPiece;
-                        this.nextTurn();
-                        this.render();
-                    }
+                    this.makeMove(square, movingPieceElement);
                 }
 
                 this.selectedPieceLegalMoves = null;
             })
         })
-    }
+    }    
 }

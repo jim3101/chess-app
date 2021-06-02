@@ -9,20 +9,74 @@ body {
     font-family: sans-serif;
 }
 
+#login {
+    display: none;
+    grid-template-columns: 70%;
+    grid-template-rows: 20% 10% 20% 20%;
+    justify-content: center;
+    background-color: rgb(127, 171, 182);
+    border-radius: 5px;
+    position: absolute;
+    height: 30vh;
+    width: 30vw;
+    box-shadow: 20px 20px 15px rgb(30, 40, 50);
+    top: 35vh;
+    left: 35vw;
+}
+
+#username-input {
+    width: 97%;
+    height: 40px;
+    font-size: 18px;
+    border-style: none;
+    border-radius: 5px;
+    padding-left: 10px;
+}
+
+#login-confirm-button {
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+    border-style: none;
+    border-radius: 5px;
+    background-color: lightgray;
+}
+
+#login-confirm-button:hover {
+    background-color: rgb(69, 98, 105);
+    color: white;
+}
+
+.user-overview-grid {
+    display: none;
+    position: absolute;
+    height: 30vh;
+    width: 30vw;
+    border-radius: 5px;
+    left: 35vw;
+    top: 35vh;
+    box-shadow: 20px 20px 15px rgb(30, 40, 50);
+    grid-template-columns: 70%;
+    grid-template-rows: 10% 10% 80%;
+    justify-content: center;
+    background-color: rgb(127, 171, 182);
+}
+
 .controls {
     display: grid;
     margin-top: calc(0.25 * var(--square-size));
     justify-content: center;
     grid-template-columns: repeat(4, calc(2 * var(--square-size)));
     grid-template-rows: repeat(2, calc(var(--square-size) * 0.75));
+    font-size: var(--button-font-size);
 }
 
 .controls > button {
     cursor: pointer;
-    font-size: var(--button-font-size);
     color: gray;
     border-style: none;
     background-color: rgb(69, 98, 105);
+    font-size: var(--button-font-size);
 }
 
 .controls > button:hover {
@@ -30,12 +84,28 @@ body {
     background-color: rgb(127, 171, 182);
 }
 
-#turn-text {
-    grid-column: 1 / span 4;
-    margin-top: min(3.5vh, 3.5vw);
+#user-text-div {
+    position: relative;
     color: lightgray;
-    font-size: var(--button-font-size);
+    grid-column: 1 / span 2;
+}
+
+#turn-text-div {
+    position: relative;
+    color: lightgray;
+    grid-column: 3 / span 2;
     text-transform: capitalize;
+}
+
+#user-text {
+    position: absolute;
+    bottom: calc(-1 * var(--button-font-size))
+}
+
+#turn-text {
+    position: absolute;
+    right: 0;
+    bottom: calc(-1 * var(--button-font-size))
 }
 
 .chessboard-grid {
@@ -57,12 +127,10 @@ body {
 
 .chessboard-square.white-square.legal-move {
     background-color: rgb(175, 223, 151);
-    /* background-color: rgb(162, 222, 236); */
 }
 
 .chessboard-square.black-square.legal-move {
     background-color: rgb(107, 148, 88);
-    /* background-color: rgb(127, 171, 182); */
 }
 
 .chessboard-square-piece {

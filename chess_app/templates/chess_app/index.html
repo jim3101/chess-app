@@ -7,16 +7,36 @@
 
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'chess_app/styles.css' %}">
+    <script src="http://localhost:5000/socket.io/socket.io.js" defer></script>
     <script type="module" src="{% static 'chess_app/main.js' %}"></script>
 </head>
 
 <body>
+    <div id="login">
+        <div class="login-grid-field"></div>
+        <div class="login-grid-field">Choose a username:</div>
+        <div class="login-grid-field username-div">
+            <input type="text" id="username-input">
+        </div>
+        <div class="login-grid-field">
+            <button id="login-confirm-button">Log In!</button>
+        </div>
+    </div>
+
+    <div id="all-players-div" class="user-overview-grid">
+        <div class="user-overview-field"></div>
+        <div class="user-overview-field">Players currently online:</div>
+        <div class="user-overview-field"><ul id="player-list"></ul></div>
+    </div>
+
     <div class="controls">
+        <button id="login-button" type="button">Log In</button>
+        <button id="show-players-button" type="button">Show Players</button>
         <button id="initial-position-button" type="button">Reset Position</button>
         <button id="flip-board-button" type="button">Flip Board</button>
-        <button id="button3" type="button">Button 3</button>
-        <button id="button4" type="button">Button 4</button>
-        <div id="turn-text"></div>
+        
+        <div id="user-text-div"><p id="user-text"></p></div>
+        <div id="turn-text-div"><p id="turn-text"></p></div>
     </div>
     
     <div id="chessboard" class="chessboard-grid">
