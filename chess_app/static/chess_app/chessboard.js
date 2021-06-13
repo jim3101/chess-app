@@ -4,10 +4,9 @@ import { chessChars } from './constants.js';
 
 export default class Chessboard {
 
-    constructor(squareElements, initialPositions, turnTextField, serverSocket) {
+    constructor(squareElements, initialPositions, turnTextField) {
         this.squareElements = squareElements;
         this.turnTextField = turnTextField;
-        this.serverSocket = serverSocket;
 
         this.positions = {};
         this.turn = 'white';
@@ -126,7 +125,6 @@ export default class Chessboard {
             this.positions[targetSquare] = movingPiece;
             this.nextTurn();
             this.render();
-            // this.serverSocket.emit('move', move);
         }
     }
 
