@@ -1,6 +1,7 @@
 :root {
     --square-size: max(min(min(10vh, 10vw), 90px), 50px);
     --chess-chars-font-size: max(min(7vh, 7vw), 35px);
+    --button-font-size: max(min(2.3vh, 2.5vw), 12px);
 }
 
 body {
