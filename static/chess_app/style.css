@@ -1,20 +1,18 @@
 :root {
     --square-size: max(min(min(10vh, 10vw), 90px), 50px);
-    --button-font-size: max(min(2.3vh, 2.5vw), 12px);
     --chess-chars-font-size: max(min(7vh, 7vw), 35px);
 }
 
 body {
-    background-color: rgb(30, 40, 50);
-    font-family: sans-serif;
+    color: black;
 }
 
 .controls {
     display: grid;
-    margin-top: calc(0.25 * var(--square-size));
+    margin: calc(0.25 * var(--square-size)) 0;
     justify-content: center;
     grid-template-columns: repeat(4, calc(2 * var(--square-size)));
-    grid-template-rows: repeat(2, calc(var(--square-size) * 0.75));
+    grid-template-rows: repeat(1, calc(var(--square-size) * 0.75));
     font-size: var(--button-font-size);
 }
 
@@ -31,16 +29,9 @@ body {
     background-color: rgb(127, 171, 182);
 }
 
-#user-text-div {
-    position: relative;
-    color: lightgray;
-    grid-column: 1 / span 2;
-}
-
 #turn-text-div {
     position: relative;
     color: lightgray;
-    grid-column: 3 / span 2;
     text-transform: capitalize;
 }
 
@@ -97,9 +88,4 @@ body {
 
 .white-square {
     background-color: rgb(248, 241, 215);
-}
-
-.chessboard-square-text {
-    margin: auto;
-    text-align: right;
 }

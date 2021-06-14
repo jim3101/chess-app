@@ -1,24 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "welcome/base.html" %}
 
-<head>
-    <meta charset="UTF-8">
-    <title>Chess</title>
+{% block title %}Chess | jimh.nl{% endblock %}
 
+{% block head %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'chess_app/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'chess_app/style.css' %}">
     <script type="module" src="{% static 'chess_app/main.js' %}"></script>
-</head>
+{% endblock %}
 
-<body>
-
+{% block content %}
     <div class="controls">
         <div></div>
         <button id="initial-position-button" type="button">Reset Position</button>
         <button id="flip-board-button" type="button">Flip Board</button>
-        <div></div>
-
-        <div id="user-text-div"><p id="user-text"></p></div>
         <div id="turn-text-div"><p id="turn-text"></p></div>
     </div>
     
@@ -95,6 +89,4 @@
         <div id="g1" class="chessboard-square black-square"></div>
         <div id="h1" class="chessboard-square white-square"></div>
     </div>
-</body>
-
-</html>
+{% endblock %}
