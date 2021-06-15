@@ -12,8 +12,6 @@ export default class Chessboard {
         this.turn = 'white';
         this.setPositions(initialPositions);
         
-        this.legalEnPassant = null;
-        this.enPassantTakes = null;
         this.selectedPieceLegalMoves = null;
     }
 
@@ -48,17 +46,17 @@ export default class Chessboard {
         this.clearRender();
         Array.from(this.squareElements).forEach(square => {
             if (this.positions.hasOwnProperty(square.id)) {
-                let p = document.createElement('DIV');
-                p.classList.add('chessboard-square-piece')
-                p.setAttribute('draggable', 'true');
-                p.id = square.id;
+                let squareText = document.createElement('DIV');
+                squareText.classList.add('chessboard-square-piece')
+                squareText.setAttribute('draggable', 'true');
+                squareText.id = square.id;
                 
                 const currentPiece = this.positions[square.id];
-                p.textContent = chessChars[currentPiece.color][currentPiece.type];
-                square.appendChild(p);
+                squareText.textContent = chessChars[currentPiece.color][currentPiece.type];
+                square.appendChild(squareText);
             }
         })
-        this.turnTextField.innerText = this.turn + "'s turn";
+        this.turnTextField.textContent = this.turn + "'s turn";
         this.setPieceEventListeners();
         this.setSquareEventListeners();
     }
