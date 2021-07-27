@@ -126,8 +126,8 @@ export default class Chessboard {
             this.render();
         }
 
-        const responseMove = await sendMove(move);
-        this.makeResponseMove(responseMove);
+        // const responseMove = await sendMove(move);
+        // this.makeResponseMove(responseMove);
     }
 
     makeResponseMove(move) {
