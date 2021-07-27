@@ -1,5 +1,6 @@
 import getLegalMoves from './legalMoves.js';
 import { chessChars } from './constants.js';
+import sendMove from './sendMove.js';
 
 
 export default class Chessboard {
@@ -112,7 +113,7 @@ export default class Chessboard {
         })
     }
 
-    makeMove(square, movingPieceElement) {
+    async makeMove(square, movingPieceElement) {
         const currentSquare = movingPieceElement.id;
         const targetSquare = square.id;
         const movingPiece = this.positions[currentSquare];
@@ -124,6 +125,17 @@ export default class Chessboard {
             this.nextTurn();
             this.render();
         }
+
+        const responseMove = await sendMove(move);
+        this.makeResponseMove(responseMove);
+    }
+
+    makeResponseMove(move) {
+        const movingPiece = this.positions[move.oldSquare];
+        delete this.positions[move.oldSquare];
+        this.positions[move.newSquare] = movingPiece;
+        this.nextTurn();
+        this.render();
     }
 
     setSquareEventListeners() {
