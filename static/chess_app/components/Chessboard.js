@@ -42,10 +42,5 @@ Vue.component('Chessboard', {
         return {
             chessboardArray: chessboardArray
         }
-    },
-    methods: {
-        movePiece: function() {
-            console.log('move piece!!');
-        }
     }
 });
