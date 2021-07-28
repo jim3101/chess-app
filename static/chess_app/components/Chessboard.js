@@ -5,7 +5,12 @@ import { isEven, isOdd } from '../src/utils.js';
 Vue.component('Chessboard', {
     template: `
         <div id="chessboard">
-            <ChessboardSquare :class="[data.color]" v-for="data in chessboardArray" :piece="data.piece" :key="data.id">
+
+            <ChessboardSquare v-for="data in chessboardArray"
+                :id="data.id"
+                :class="[data.color]" 
+                :piece="data.piece"
+                :key="data.id">
             </ChessboardSquare>
         </div>
     `,
@@ -17,13 +22,17 @@ Vue.component('Chessboard', {
                 const file = String.fromCharCode('a'.charCodeAt(0) + column);
                 const squareID = file + rank.toString();
 
-                let piece = '';
+                let piece = null;
                 if (initialPositions.hasOwnProperty(squareID)) {
-                    piece = initialPositions[squareID].getChar();
+                    piece = initialPositions[squareID];
+                }
+
+                if (piece !== null) {
+                    piece.setPosition(squareID);
                 }
 
                 chessboardArray.push({
-                    id: file + rank.toString(),
+                    id: squareID,
                     color: (isEven(rank) && isEven(column) || isOdd(rank) && isOdd(column)) ? 'white' : 'black',
                     piece: piece
                 })
@@ -32,6 +41,11 @@ Vue.component('Chessboard', {
 
         return {
             chessboardArray: chessboardArray
+        }
+    },
+    methods: {
+        movePiece: function() {
+            console.log('move piece!!');
         }
     }
 });

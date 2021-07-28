@@ -13,9 +13,11 @@ export default class Piece {
     constructor(color, type) {
         this.color = color;
         this.type = type;
+        this.char = chessChars[this.color][this.type];
+        this.position = undefined;
     }
 
-    getChar() {
-        return chessChars[this.color][this.type]
+    setPosition(position) {
+        this.position = position;
     }
 }

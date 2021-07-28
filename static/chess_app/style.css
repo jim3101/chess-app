@@ -25,3 +25,7 @@
 .chessboard-square.black {
     background-color: rgb(206, 159, 116);
 }
+
+.chessboard-square.dragged-over {
+    border: 4px solid black;
+}
