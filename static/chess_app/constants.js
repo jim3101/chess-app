@@ -1,17 +1,6 @@
 import Piece from './piece.js';
 
 
-const whiteCharacters = {'king': String.fromCharCode(9812), 'queen': String.fromCharCode(9813), 'rook': String.fromCharCode(9814),
-                   'bishop': String.fromCharCode(9815), 'knight': String.fromCharCode(9816), 'pawn': String.fromCharCode(9817)};
-
-
-const blackCharacters = {'king': String.fromCharCode(9818), 'queen': String.fromCharCode(9819), 'rook': String.fromCharCode(9820),
-                   'bishop': String.fromCharCode(9821), 'knight': String.fromCharCode(9822), 'pawn': String.fromCharCode(9823)};
-
-
-export const chessChars = {'white': whiteCharacters, 'black': blackCharacters};
-
-
 export const initialPositions = {'a1': new Piece('white', 'rook'), 
                                  'b1': new Piece('white', 'knight'), 
                                  'c1': new Piece('white', 'bishop'),
