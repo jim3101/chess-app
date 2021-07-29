@@ -26,6 +26,14 @@
     background-color: rgb(206, 159, 116);
 }
 
+.chessboard-square.white.legal-move {
+    background-color: rgb(175, 223, 151);
+}
+
+.chessboard-square.black.legal-move {
+    background-color: rgb(107, 148, 88);
+}
+
 .chessboard-square.dragged-over {
     border: 4px solid black;
 }

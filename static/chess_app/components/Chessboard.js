@@ -1,12 +1,12 @@
 Vue.component('Chessboard', {
-    props: ['store'],
+    props: ['appState'],
     template: `
         <div id="chessboard">
 
-            <ChessboardSquare v-for="square in store.state.chessboardState" :key="square.id"
-                              :class="[square.color]"     
+            <ChessboardSquare v-for="square in appState.state.chessboardState" :key="square.id"
+                              :class="[square.isLegalMove, square.color]"     
                               :squareData="square"
-                              :store="store">
+                              :appState="appState">
             </ChessboardSquare>
         </div>
     `

@@ -10,22 +10,31 @@ function getCSRFCookie(allCookies) {
 }
 
 
-export default async function sendMove(move) {
+async function sendData(path, data) {
     const csrfCookie = getCSRFCookie(document.cookie);
 
     try {
-        const response = await fetch('/chess/move', {
+        const response = await fetch(path, {
             method: 'POST',
             mode: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrfCookie
             },
-            body: JSON.stringify(move)
+            body: JSON.stringify(data)
         })
-        const jsonResponse = await response.json()
+        const jsonResponse = await response.json();
         return jsonResponse;
     } catch (err) {
         console.log(err)
     }
+}
+
+
+export async function sendMove(move) {
+    return await sendData('/chess/move/', move);
+}
+
+export async function requestLegalMoves(selectedPiece) {
+    return await sendData('/chess/legalmoves/', selectedPiece);
 }

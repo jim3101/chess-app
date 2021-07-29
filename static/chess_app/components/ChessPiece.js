@@ -1,8 +1,13 @@
+import { requestLegalMoves } from '../sendMove.js';
+
+
 Vue.component('ChessPiece', {
-    props: ['piece'],
+    props: ['piece', 'appState'],
     template: `
         <div class="chess-piece"
             :class="classObject"
+            @mousedown="showLegalMoves"
+            @mouseup="clearLegalMoves"
             @dragstart="dragStart"
             @dragend="dragEnd"
             draggable>
@@ -18,6 +23,15 @@ Vue.component('ChessPiece', {
         }
     },
     methods: {
+        showLegalMoves: function(event) {
+            const data = {player: 'white', piece: {type: 'pawn'}, chessboardState: []};
+            requestLegalMoves(data).then((legalMoves) => {
+                this.appState.setLegalMoves(legalMoves.legalMoves);
+            });
+        },
+        clearLegalMoves: function(event) {
+            this.appState.clearLegalMoves();
+        },
         dragStart: function(event) {
             event.dataTransfer.setData('text/plain', this.piece.position);
             this.classObject['dragging'] = true

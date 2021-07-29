@@ -24,7 +24,8 @@ export default function initializeChessboard() {
             chessboardState[squareID] = {
                 id: squareID,
                 color: squareColor,
-                piece: piece
+                piece: piece,
+                isLegalMove: 'illegal-move'
             };
         }
     }
