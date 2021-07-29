@@ -1,9 +1,9 @@
 :root {
-    --square-size: 50px;
+    --square-size: 70px;
 }
 
 #chessboard {
-    margin: 40px;
+    margin: 80px;
     display: grid;
     justify-content: center;
     align-content: flex-start;
@@ -13,7 +13,7 @@
 }
 
 .chessboard-square {
-    font-size: 38px;
+    font-size: 50px;
     text-align: center;
     color: black;
 }

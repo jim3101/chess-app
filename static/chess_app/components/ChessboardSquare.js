@@ -1,5 +1,5 @@
 Vue.component('ChessboardSquare', {
-    props: ['id', 'piece'],
+    props: ['squareData', 'store'],
     template: `
         <div class="chessboard-square"
              :class="classObject"
@@ -8,8 +8,8 @@ Vue.component('ChessboardSquare', {
              @drop="drop">
             
              <ChessPiece 
-                v-if="piece !== null"
-                :piece="piece"></ChessPiece>
+                v-if="squareData.piece !== null"
+                :piece="squareData.piece"></ChessPiece>
         </div>
     `,
     data: function() {
@@ -32,8 +32,7 @@ Vue.component('ChessboardSquare', {
             event.preventDefault();
             const dropData = event.dataTransfer.getData('text/plain');
             this.classObject['dragged-over'] = false;
-            console.log(dropData);
-            console.log(this.id);
+            this.store.movePiece(dropData, this.squareData.id);
         }
     }
 });
