@@ -18,21 +18,18 @@ Vue.component('ChessboardSquare', {
     `,
     data: function() {
         return {
-            draggedOver: false,
             draggable: true,
             classObject: {
-                'dragged-over': this.draggedOver
+                'dragged-over': false
             }
         }
     },
     methods: {
         dragOver: function(event) {
             event.preventDefault();
-            // this.draggedOver = true;
             this.classObject['dragged-over'] = true;
         },
         dragLeave: function() {
-            // this.draggedOver = false;
             this.classObject['dragged-over'] = false;
         },
         drop: function(event) {
@@ -45,10 +42,6 @@ Vue.component('ChessboardSquare', {
             // sendMove({hello: 'world!'}).then((response) => {
             //     console.log('response', response);
             // });
-        },
-        // onClick: function(event) {
-        //     const squareID = this.squareData.id;
-        //     console.log('click2', this.squareData.isLegalMove);
-        // }
+        }
     }
 });
