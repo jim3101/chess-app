@@ -14,6 +14,9 @@ class LegalMoves:
         self.legal_moves = []
 
     def get_legal_moves(self):
+        if self.player != self.piece['color']:
+            return []
+        
         if self.piece['type'] == 'pawn':
             self.add_legal_pawn_moves()
         if self.piece['type'] == 'knight':
@@ -144,6 +147,6 @@ class LegalMoves:
             rank_code = str(rank_number)
             return file_code + rank_code
         elif self.player == 'black':
-            file_code = chr(9 - (file_number - 1 + ord('a')))
+            file_code = chr((9 - file_number) - 1 + ord('a'))
             rank_code = str(9 - rank_number)
             return file_code + rank_code

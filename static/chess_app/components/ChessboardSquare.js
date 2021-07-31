@@ -2,7 +2,7 @@ import { sendMove } from '../src/sendMove.js';
 
 
 Vue.component('ChessboardSquare', {
-    props: ['squareData', 'appState'],
+    props: ['squareData'],
     template: `
         <div class="chessboard-square"
              :class="classObject"
@@ -12,8 +12,8 @@ Vue.component('ChessboardSquare', {
             
              <ChessPiece 
                 v-if="squareData.piece !== null"
-                :piece="squareData.piece"
-                :appState="appState"></ChessPiece>
+                :piece="squareData.piece">
+             </ChessPiece>
         </div>
     `,
     data: function() {
@@ -34,11 +34,11 @@ Vue.component('ChessboardSquare', {
         },
         drop: function(event) {
             event.preventDefault();
-            this.appState.clearLegalMoves();
+            // this.$root.$data.appState.clearLegalMoves();
 
             const dropData = event.dataTransfer.getData('text/plain');
             this.classObject['dragged-over'] = false;
-            this.appState.movePiece(dropData, this.squareData.id);
+            this.$root.$data.appState.movePiece(dropData, this.squareData.id);
             // sendMove({hello: 'world!'}).then((response) => {
             //     console.log('response', response);
             // });

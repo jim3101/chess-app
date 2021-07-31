@@ -1,13 +1,16 @@
 Vue.component('Chessboard', {
-    props: ['appState'],
     template: `
         <div id="chessboard">
 
-            <ChessboardSquare v-for="square in appState.state.chessboardState" :key="square.id"
+            <ChessboardSquare v-for="square in chessboardState" :key="square.id"
                               :class="[square.isLegalMove, square.color]"     
-                              :squareData="square"
-                              :appState="appState">
+                              :squareData="square">
             </ChessboardSquare>
         </div>
-    `
+    `,
+    data: function() {
+        return {
+            chessboardState: this.$root.$data.appState.getChessboardState()
+        }
+    }
 });
