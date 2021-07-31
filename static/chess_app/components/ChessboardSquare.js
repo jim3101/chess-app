@@ -1,4 +1,4 @@
-import { sendMove } from '../sendMove.js';
+import { sendMove } from '../src/sendMove.js';
 
 
 Vue.component('ChessboardSquare', {

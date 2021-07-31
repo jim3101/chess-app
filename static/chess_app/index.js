@@ -9,7 +9,9 @@ const appState = {
     },
     movePiece: function(fromSquare, toSquare) {
         if (this.debug) console.log('moving piece from', fromSquare, 'to', toSquare);
+        
         this.state.chessboardState[toSquare].piece = this.state.chessboardState[fromSquare].piece;
+        this.state.chessboardState[toSquare].piece.setPosition(toSquare);
         this.state.chessboardState[fromSquare].piece = null;
     },
     setLegalMoves: function(legalMoves) {

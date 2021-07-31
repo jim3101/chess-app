@@ -1,4 +1,4 @@
-import { initialPositions } from '../constants.js';
+import { initialPositions } from './constants.js';
 import { isEven, isOdd } from './utils.js';
 
 

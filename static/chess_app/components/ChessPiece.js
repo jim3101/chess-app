@@ -1,4 +1,4 @@
-import { requestLegalMoves } from '../sendMove.js';
+import { requestLegalMoves } from '../src/sendMove.js';
 
 
 Vue.component('ChessPiece', {
@@ -24,7 +24,7 @@ Vue.component('ChessPiece', {
     },
     methods: {
         showLegalMoves: function(event) {
-            const data = {player: 'white', piece: {type: 'pawn'}, chessboardState: []};
+            const data = {player: 'white', piece: this.piece, chessboardState: this.appState.state.chessboardState};
             requestLegalMoves(data).then((legalMoves) => {
                 this.appState.setLegalMoves(legalMoves.legalMoves);
             });
