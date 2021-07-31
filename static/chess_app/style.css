@@ -3,17 +3,16 @@
 }
 
 #chessboard {
-    margin: 80px;
+    margin-top: 80px;
     display: grid;
     justify-content: center;
     align-content: flex-start;
-    height: 80vh;
     grid-template-columns: repeat(8, var(--square-size));
     grid-template-rows: repeat(8, var(--square-size));
 }
 
 .chessboard-square {
-    font-size: 50px;
+    font-size: 55px;
     text-align: center;
     color: black;
 }

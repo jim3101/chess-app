@@ -1,6 +1,3 @@
-import { sendMove } from '../src/sendMove.js';
-
-
 Vue.component('ChessboardSquare', {
     props: ['squareData'],
     template: `
@@ -34,14 +31,10 @@ Vue.component('ChessboardSquare', {
         },
         drop: function(event) {
             event.preventDefault();
-            // this.$root.$data.appState.clearLegalMoves();
 
             const dropData = event.dataTransfer.getData('text/plain');
             this.classObject['dragged-over'] = false;
-            this.$root.$data.appState.movePiece(dropData, this.squareData.id);
-            // sendMove({hello: 'world!'}).then((response) => {
-            //     console.log('response', response);
-            // });
+            this.$root.$data.appState.movePiece(dropData, this.squareData.id, true, true);
         }
     }
 });

@@ -1,19 +1,41 @@
+import copy
 from chess_app.src.move import Move
 
 
 class LegalMoves:
 
-    def __init__(self, player, piece, chessboard_state):
+    def __init__(self, player, chessboard_state, piece=None, remove_checks=True):
         self.player = player
-        self.piece = piece
         self.chessboard_state = chessboard_state
+        self.piece = piece
+        self.should_remove_checks = remove_checks
 
-        self.rank_number = self.get_rank_number(self.piece['position'])
-        self.file_number = self.get_file_number(self.piece['position'])
+        if self.piece is not None:
+            self.rank_number = self.get_rank_number(self.piece['position'])
+            self.file_number = self.get_file_number(self.piece['position'])
+        else:
+            self.rank_number = None
+            self.file_number = None
 
         self.legal_moves = []
 
+    def set_piece(self, piece):
+        self.piece = piece
+
+        self.rank_number = self.get_rank_number(piece['position'])
+        self.file_number = self.get_file_number(piece['position'])
+
+    def get_all_legal_moves(self):
+        all_legal_moves = []
+        for square_id, square_data in self.chessboard_state.items():
+            if square_data['piece'] is not None and square_data['piece']['color'] == self.player:
+                self.set_piece(square_data['piece'])
+                all_legal_moves.extend(self.get_legal_moves())
+
+        return all_legal_moves
+
     def get_legal_moves(self):
+        self.legal_moves = []
         if self.player != self.piece['color']:
             return []
         
@@ -29,6 +51,9 @@ class LegalMoves:
             self.add_legal_queen_moves()
         if self.piece['type'] == 'king':
             self.add_legal_king_moves()
+
+        if self.should_remove_checks:
+            self.remove_checks()
 
         return self.legal_moves
 
@@ -112,6 +137,27 @@ class LegalMoves:
             return False
         return True
 
+    def remove_checks(self):
+        moves_without_checks = []
+
+        for legal_move in self.legal_moves:
+            next_chessboard_state = copy.deepcopy(self.chessboard_state)
+            next_chessboard_state[legal_move['new']]['piece'] = copy.copy(self.chessboard_state[legal_move['old']]['piece'])
+            next_chessboard_state[legal_move['old']]['piece'] = None
+
+            if not self.can_next_player_take_king(next_chessboard_state):
+                moves_without_checks.append(legal_move)
+        
+        self.legal_moves = moves_without_checks            
+
+    def can_next_player_take_king(self, next_chessboard_state):
+        next_players_legal_moves = LegalMoves(self.get_other_player(), next_chessboard_state, remove_checks=False).get_all_legal_moves()
+        for move in next_players_legal_moves:
+            new_square = next_chessboard_state[move['new']]
+            if new_square['piece'] and new_square['piece']['color'] == self.player and new_square['piece']['type'] == 'king':
+                return True
+        return False
+
     def square_is_free(self, square_code):
         return self.chessboard_state[square_code]['piece'] == None
 
@@ -150,3 +196,9 @@ class LegalMoves:
             file_code = chr((9 - file_number) - 1 + ord('a'))
             rank_code = str(9 - rank_number)
             return file_code + rank_code
+
+    def get_other_player(self):
+        if self.player == 'white':
+            return 'black'
+        else:
+            return 'white'
