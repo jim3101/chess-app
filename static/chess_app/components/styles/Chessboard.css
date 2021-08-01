@@ -1,0 +1,8 @@
+#chessboard {
+    margin-top: 80px;
+    display: grid;
+    justify-content: center;
+    align-content: flex-start;
+    grid-template-columns: repeat(8, 70px);
+    grid-template-rows: repeat(8, 70px);
+}

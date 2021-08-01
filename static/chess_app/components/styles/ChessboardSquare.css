@@ -1,16 +1,3 @@
-:root {
-    --square-size: 70px;
-}
-
-#chessboard {
-    margin-top: 80px;
-    display: grid;
-    justify-content: center;
-    align-content: flex-start;
-    grid-template-columns: repeat(8, var(--square-size));
-    grid-template-rows: repeat(8, var(--square-size));
-}
-
 .chessboard-square {
     font-size: 55px;
     text-align: center;

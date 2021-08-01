@@ -4,8 +4,10 @@
 
 {% block head %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'welcome/welcome_style.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'chess_app/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'welcome/components/styles/Navbar.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'welcome/components/styles/NavbarItem.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'chess_app/components/styles/Chessboard.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'chess_app/components/styles/ChessboardSquare.css' %}">
 {% endblock %}
 
 {% block content %}
