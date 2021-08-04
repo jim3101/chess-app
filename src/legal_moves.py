@@ -131,7 +131,7 @@ class LegalMoves:
     def assess_move(self, new_position, conditions):
         if all(conditions):
             new_move = Move(self.piece['type'], self.piece['position'], new_position)
-            self.legal_moves.append(new_move.as_dict())
+            self.legal_moves.append(new_move)
             if not self.square_is_free(new_position):
                 return True
             return False
@@ -142,8 +142,8 @@ class LegalMoves:
 
         for legal_move in self.legal_moves:
             next_chessboard_state = copy.deepcopy(self.chessboard_state)
-            next_chessboard_state[legal_move['new']]['piece'] = copy.copy(self.chessboard_state[legal_move['old']]['piece'])
-            next_chessboard_state[legal_move['old']]['piece'] = None
+            next_chessboard_state[legal_move.new]['piece'] = copy.copy(self.chessboard_state[legal_move.old]['piece'])
+            next_chessboard_state[legal_move.old]['piece'] = None
 
             if not self.can_next_player_take_king(next_chessboard_state):
                 moves_without_checks.append(legal_move)
@@ -153,7 +153,7 @@ class LegalMoves:
     def can_next_player_take_king(self, next_chessboard_state):
         next_players_legal_moves = LegalMoves(self.get_other_player(), next_chessboard_state, remove_checks=False).get_all_legal_moves()
         for move in next_players_legal_moves:
-            new_square = next_chessboard_state[move['new']]
+            new_square = next_chessboard_state[move.new]
             if new_square['piece'] and new_square['piece']['color'] == self.player and new_square['piece']['type'] == 'king':
                 return True
         return False

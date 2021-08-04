@@ -1,6 +1,4 @@
 import initializeChessboard from './src/initializeChessboard.js';
-import { sendMove } from './src/sendMove.js';
-import Move from './src/move.js';
 
 
 const appState = {
@@ -14,7 +12,7 @@ const appState = {
         return this.state.chessboardState;
     },
     setLegalMoves: function(legalMoves) {
-        if (this.debug) console.log('setting legal moves:', legalMoves);
+        if (this.debug) console.log(`setting legal moves: ${JSON.stringify(legalMoves)}`);
         
         this.state.legalMoves = legalMoves;
 
@@ -42,8 +40,8 @@ const appState = {
 
         this.state.legalMoves = [];
     },
-    movePiece: function(fromSquare, toSquare, checkIfLegal, requestNextMove) {
-        if (this.debug) console.log('moving piece from', fromSquare, 'to', toSquare);
+    movePiece: function(fromSquare, toSquare, checkIfLegal) {
+        if (this.debug) console.log(`moving piece from ${JSON.stringify(fromSquare)} to ${JSON.stringify(toSquare)}`);
         
         if (!checkIfLegal || this.getLegalMoves().map(legalMove => legalMove.new).includes(toSquare)) {
             this.state.chessboardState[toSquare].piece = this.state.chessboardState[fromSquare].piece;
@@ -56,22 +54,10 @@ const appState = {
                 this.setPlayer('white');
             }
 
-            if (requestNextMove) {
-                console.log('sending move to server');
-                const move = new Move(fromSquare, toSquare);
-                sendMove({ player: this.getPlayer(), move: move, chessboardState: this.getChessboardState() }).then((response) => {
-                    console.log('response', response);
-                    if (response.checkmate) {
-                        return;
-                    }
-                    this.movePiece(response.move.old, response.move.new, false, false);
-                });
-            }
+            return true;
         } else {
-            if (this.debug) console.log('illegal move!');
+            return false;
         }
-
-        this.clearLegalMoves();
     }
 };
 

@@ -16,7 +16,8 @@ def move(request):
         move_data = json.loads(request.body)
         chess_engine = ChessEngine(move_data)
         random_move, checkmate = chess_engine.get_random_move()
-        return JsonResponse({'move': random_move, 'checkmate': checkmate})
+        best_move, checkmate = chess_engine.get_best_move()
+        return JsonResponse({'move': best_move.as_dict(), 'checkmate': checkmate})
     else:
         return JsonResponse({'error': 'only post requests are allowed'})
 
@@ -25,6 +26,6 @@ def legal_moves(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         legal_moves = LegalMoves(data['player'], data['chessboardState'], piece=data['piece'], remove_checks=True).get_legal_moves()
-        return JsonResponse({'legalMoves': legal_moves})
+        return JsonResponse({'legalMoves': [move.as_dict() for move in legal_moves]})
     else:
         return JsonResponse({'error': 'only post requests are allowed'})
