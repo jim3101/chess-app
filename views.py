@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import ensure_csrf_cookie
 from chess_app.src.legal_moves import LegalMoves
 from chess_engine.src.chess_engine import ChessEngine
+from chess_app.src.chessboard_state import ChessboardState
 
 
 @ensure_csrf_cookie
@@ -14,10 +15,9 @@ def index(request):
 def move(request):
     if request.method == 'POST':
         move_data = json.loads(request.body)
-        chess_engine = ChessEngine(move_data)
-        random_move, checkmate = chess_engine.get_random_move()
-        best_move, checkmate = chess_engine.get_best_move()
-        return JsonResponse({'move': best_move.as_dict(), 'checkmate': checkmate})
+        chess_engine = ChessEngine(move_data['player'], ChessboardState(move_data['chessboardState']))
+        best_move, move_evaluation = chess_engine.get_best_move(depth=2)
+        return JsonResponse({'move': best_move.as_dict(), 'checkmate': False})
     else:
         return JsonResponse({'error': 'only post requests are allowed'})
 
