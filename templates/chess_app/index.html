@@ -4,8 +4,6 @@
 
 {% block head %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'welcome/components/styles/Navbar.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'welcome/components/styles/NavbarItem.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'chess_app/components/styles/Chessboard.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'chess_app/components/styles/ChessboardSquare.css' %}">
 {% endblock %}
@@ -13,8 +11,6 @@
 {% block content %}
 
 {% load static %}
-<script type="module" src="{% static 'welcome/components/Navbar.js' %}"></script>
-<script type="module" src="{% static 'welcome/components/NavbarItem.js' %}"></script>
 <script type="module" src="{% static 'chess_app/components/ChessPiece.js' %}"></script>
 <script type="module" src="{% static 'chess_app/components/ChessboardSquare.js' %}"></script>
 <script type="module" src="{% static 'chess_app/components/Chessboard.js' %}"></script>

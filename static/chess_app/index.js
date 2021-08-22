@@ -65,7 +65,6 @@ const appState = {
 Vue.component('App', {
     template: `
         <div class="app">
-            <Navbar></Navbar>
             <Chessboard></Chessboard>
         </div>
     `
